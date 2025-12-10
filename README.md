@@ -49,4 +49,4 @@ You can run this script automatically for free using GitHub Actions.
 4.  Add the following secrets:
     *   Name: `TELEGRAM_BOT_TOKEN`, Value: (Your Bot Token)
     *   Name: `TELEGRAM_CHAT_ID`, Value: (Your Chat ID)
-5.  The script will run automatically every day at 16:00 Taipei Time. You can also manually trigger it from the **Actions** tab.
+5.  The script will run automatically **Monday to Friday between 08:20 and 08:40 (Taipei Time)**, every 5 minutes. You can also manually trigger it from the **Actions** tab.
