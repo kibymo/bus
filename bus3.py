@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import subprocess
+import sys
 import os
 
 def send_telegram(message):
@@ -37,11 +38,25 @@ def main():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--window-size=1920,1080")
     
-    chrome_service = Service()
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    try:
+        chrome_service = Service()
+        driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    except Exception as e:
+        error_msg = f"Failed to initialize Chrome driver: {e}"
+        print(error_msg)
+        send_telegram(f"[Bus Check Failed] {error_msg}")
+        sys.exit(1)
 
     url = "https://pda5284.gov.taipei/MQS/route.jsp?rid=10785"
-    driver.get(url)
+    
+    try:
+        driver.get(url)
+    except Exception as e:
+        error_msg = f"Failed to load URL {url}: {e}"
+        print(error_msg)
+        send_telegram(f"[Bus Check Failed] {error_msg}")
+        driver.quit()
+        sys.exit(1)
 
     wait = WebDriverWait(driver, 10)
     
@@ -53,6 +68,8 @@ def main():
     ]
 
     message_lines = []
+    
+    error_occurred = False # Track if partial errors occur but we want to continue
 
     try:
         # Wait for at least one of the tables (Go route default usually loads)
@@ -110,15 +127,29 @@ def main():
                         message_lines.append(line_output)
 
                 except Exception as e:
+                    print(f"Error processing row: {e}")
                     continue
 
     except Exception as e:
         print(f"An error occurred: {e}")
+        error_msg = f"[Bus Check Failed] Script Exception: {e}"
+        send_telegram(error_msg)
+        try:
+            driver.quit()
+        except:
+            pass
+        sys.exit(1)
         
     finally:
+        try:
+            driver.quit()
+        except:
+            pass
+            
         if message_lines:
             full_message = "\n".join(message_lines)
             send_telegram(full_message)
+        
 
 if __name__ == "__main__":
     main()
