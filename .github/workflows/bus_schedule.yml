@@ -1,12 +1,12 @@
 name: Daily Bus Check
 
 on:
-  schedule:
-    # Run Mon-Fri 08:20-08:40 (Taipei Time) every 5 minutes
-    # Taipei is UTC+8, so 08:20-08:40 is 00:20-00:40 UTC
-    - cron: '20-40/5 0 * * 1-5'
-    # Test schedule 10:30-10:50 Taipei (02:30-02:50 UTC)
-    - cron: '30-50/5 2 * * *'
+#   schedule:
+#     # Run Mon-Fri 08:20-08:40 (Taipei Time) every 5 minutes
+#     # Taipei is UTC+8, so 08:20-08:40 is 00:20-00:40 UTC
+#     - cron: '20-40/5 0 * * 1-5'
+#     # Test schedule 10:30-10:50 Taipei (02:30-02:50 UTC)
+#     - cron: '30-50/5 2 * * *'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
